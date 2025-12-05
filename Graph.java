@@ -101,10 +101,33 @@ public class Graph {
    * and/or more than one root vertex, then return -1.
    * 
    */
-  
+
   public int findRoot() {
 
-    // ADD YOUR CODE HERE - DO NOT FORGET TO ADD YOUR NAME/SECTION AT TOP OF FILE
-    return -1;
-  } 
-}
+    int[] inDegree = new int[numVertices];
+
+    for (int src = 0; src < numVertices; src++) {
+      for (int dest : adjListArr[src]) {
+        if (dest >= 0 && dest < numVertices) {
+          inDegree[dest]++;
+        }
+      }
+    }
+
+    int rootIndex = -1;  
+
+    for (int i = 0; i < numVertices; i++) {
+      if (inDegree[i] == 0) {
+        if (rootIndex != -1) {
+          return -1;        
+        }
+        rootIndex = i;
+      }
+    }
+
+    if (rootIndex == -1) {
+      return -1;
+    }
+
+    return vertexValues.get(rootIndex);
+  }
