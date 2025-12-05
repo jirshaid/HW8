@@ -1,6 +1,6 @@
 /******************************************************************
  *
- *   ADD YOUR NAME / SECTION NUMBER HERE
+ *   Jenine Irshaid / 002
  *
  *   This java file contains the problem solutions of canFinish and
  *   numGroups methods.
@@ -78,14 +78,44 @@ class ProblemSolutions {
         int numNodes = numExams;  // # of nodes in graph
 
         // Build directed graph's adjacency list
-        ArrayList<Integer>[] adj = getAdjList(numExams, 
-                                        prerequisites); 
+        ArrayList<Integer>[] adj = getAdjList(numExams, prerequisites); 
 
-        // ADD YOUR CODE HERE - ADD YOUR NAME / SECTION AT TOP OF FILE
-        return false;
+        // state[i] = 0 (unvisited), 1 (visiting), 2 (visited)
+        int[] state = new int[numNodes];
 
+        // Run DFS from every node to detect a cycle
+        for (int i = 0; i < numNodes; i++) {
+            if (state[i] == 0) {
+                if (hasCycle(i, adj, state)) {
+                    // A cycle exists – cannot finish all exams
+                    return false;
+                }
+            }
+        }
+
+        // No cycles detected – some order exists
+        return true;
     }
 
+    // Helper method: returns true if a cycle is found starting from 'node'
+    private boolean hasCycle(int node, ArrayList<Integer>[] adj, int[] state) {
+        state[node] = 1;  // mark as visiting
+
+        for (int neighbor : adj[node]) {
+            if (state[neighbor] == 1) {
+                // Found a back edge to a node currently in recursion stack → cycle
+                return true;
+            }
+            if (state[neighbor] == 0) {
+                if (hasCycle(neighbor, adj, state)) {
+                    return true;
+                }
+            }
+        }
+
+        state[node] = 2;  // mark as fully visited
+        return false;
+    }
 
     /**
      * Method getAdjList
@@ -165,8 +195,8 @@ class ProblemSolutions {
 
     public int numGroups(int[][] adjMatrix) {
         int numNodes = adjMatrix.length;
-        Map<Integer,List<Integer>> graph = new HashMap();
-        int i = 0, j =0;
+        Map<Integer, List<Integer>> graph = new HashMap();
+        int i = 0, j = 0;
 
         /*
          * Converting the Graph Adjacency Matrix to
@@ -174,9 +204,9 @@ class ProblemSolutions {
          * sample code illustrates a technique to do so.
          */
 
-        for(i = 0; i < numNodes ; i++){
-            for(j = 0; j < numNodes; j++){
-                if( adjMatrix[i][j] == 1 && i != j ){
+        for (i = 0; i < numNodes ; i++) {
+            for (j = 0; j < numNodes; j++) {
+                if (adjMatrix[i][j] == 1 && i != j) {
                     // Add AdjList for node i if not there
                     graph.putIfAbsent(i, new ArrayList());
                     // Add AdjList for node j if not there
@@ -190,9 +220,35 @@ class ProblemSolutions {
             }
         }
 
-        // YOUR CODE GOES HERE - you can add helper methods, you do not need
-        // to put all code in this method.
-        return -1;
+        // Now count connected components using DFS
+        boolean[] visited = new boolean[numNodes];
+        int groups = 0;
+
+        for (int node = 0; node < numNodes; node++) {
+            if (!visited[node]) {
+                groups++;
+                dfsGroups(node, graph, visited);
+            }
+        }
+
+        return groups;
+    }
+
+    // DFS helper for numGroups
+    private void dfsGroups(int node, Map<Integer, List<Integer>> graph, boolean[] visited) {
+        visited[node] = true;
+
+        List<Integer> neighbors = graph.get(node);
+        if (neighbors == null) {
+            // No neighbors – isolated node
+            return;
+        }
+
+        for (int neighbor : neighbors) {
+            if (!visited[neighbor]) {
+                dfsGroups(neighbor, graph, visited);
+            }
+        }
     }
 
 }
