@@ -35,6 +35,7 @@ public class Graph {
       vertexValues.add(0);
     }
   }
+}
 
   /*
    * method setValue
