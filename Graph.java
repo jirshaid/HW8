@@ -35,7 +35,6 @@ public class Graph {
       vertexValues.add(0);
     }
   }
-}
 
   /*
    * method setValue
@@ -102,11 +101,12 @@ public class Graph {
    * and/or more than one root vertex, then return -1.
    * 
    */
-
+  
   public int findRoot() {
-
+    // inDegree[i] will store how many incoming edges vertex i has
     int[] inDegree = new int[numVertices];
 
+    // Compute in-degrees by scanning adjacency list
     for (int src = 0; src < numVertices; src++) {
       for (int dest : adjListArr[src]) {
         if (dest >= 0 && dest < numVertices) {
@@ -115,20 +115,25 @@ public class Graph {
       }
     }
 
-    int rootIndex = -1;  
+    // Find vertices with in-degree 0
+    int rootIndex = -1;
 
     for (int i = 0; i < numVertices; i++) {
       if (inDegree[i] == 0) {
         if (rootIndex != -1) {
-          return -1;        
+          // more than one vertex has no incoming edges
+          return -1;
         }
         rootIndex = i;
       }
     }
 
+    // If no root or more than one root, return -1
     if (rootIndex == -1) {
       return -1;
     }
 
+    // Return the value stored at the root vertex
     return vertexValues.get(rootIndex);
-  }
+  } 
+}
